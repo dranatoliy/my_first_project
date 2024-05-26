@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/main.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/venv/common/bot_cmnds_list.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/venv/common/bot_commands.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/venv/filters/chat_types.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/venv/handlers/admin_private.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/venv/handlers/user_private.py" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/venv/keybord/reply.py" charset="UTF-8" />
+  </component>
+</project>
