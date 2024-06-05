@@ -51,7 +51,7 @@ async def admin_features(message: types.Message, session: AsyncSession):
 async def starring_at_product(callback: types.CallbackQuery, session: AsyncSession):
     category_id = callback.data.split('_')[-1]
     for product in await orm_get_products(session, int(category_id)):
-        await callback.message.answer_photo(
+        await callback.message.answer_video(
             product.image,
             caption=f"<strong>{product.name}\
                     </strong>\n{product.description}\nСтоимость: {round(product.price, 2)}",
@@ -105,7 +105,7 @@ async def add_banner(message: types.Message, state: FSMContext, session: AsyncSe
     await state.clear()
 
 # ловим некоррекный ввод
-@admin_router.message(AddBanner.image)
+@admin_router.message(AddBanner.image, F.text.casefold() != "отмена")
 async def add_banner2(message: types.Message, state: FSMContext):
     await message.answer("Отправьте фото баннера или отмена")
 
@@ -113,7 +113,7 @@ async def add_banner2(message: types.Message, state: FSMContext):
 
 
 
-######################### FSM для дабавления/изменения товаров админом ###################
+######################### FSM для добавления/изменения товаров админом ###################
 
 class AddProduct(StatesGroup):
     # Шаги состояний
@@ -256,13 +256,13 @@ async def category_choice(callback: types.CallbackQuery, state: FSMContext , ses
         await callback.message.answer('Теперь введите цену товара.')
         await state.set_state(AddProduct.price)
     else:
-        await callback.message.answer('Выберите катеорию из кнопок.')
+        await callback.message.answer('Выберите категорию из кнопок.')
         await callback.answer()
 
 #Ловим любые некорректные действия, кроме нажатия на кнопку выбора категории
 @admin_router.message(AddProduct.category)
 async def category_choice2(message: types.Message, state: FSMContext):
-    await message.answer("'Выберите катеорию из кнопок.'") 
+    await message.answer("'Выберите категорию из кнопок.'")
 
 
 # Ловим данные для состояние price и потом меняем состояние на image
@@ -278,7 +278,7 @@ async def add_price(message: types.Message, state: FSMContext):
             return
 
         await state.update_data(price=message.text)
-    await message.answer("Загрузите изображение товара")
+    await message.answer("Загрузите видео игрушки")
     await state.set_state(AddProduct.image)
 
 # Хендлер для отлова некорректных ввода для состояния price
@@ -288,15 +288,15 @@ async def add_price2(message: types.Message, state: FSMContext):
 
 
 # Ловим данные для состояние image и потом выходим из состояний
-@admin_router.message(AddProduct.image, or_f(F.photo, F.text == "."))
+@admin_router.message(AddProduct.image, or_f(F.video, F.text == "."))
 async def add_image(message: types.Message, state: FSMContext, session: AsyncSession):
     if message.text and message.text == "." and AddProduct.product_for_change:
         await state.update_data(image=AddProduct.product_for_change.image)
 
-    elif message.photo:
-        await state.update_data(image=message.photo[-1].file_id)
+    elif message.video:
+        await state.update_data(image=message.video.file_id)
     else:
-        await message.answer("Отправьте фото пищи")
+        await message.answer("Отправьте видео игрушки")
         return
     data = await state.get_data()
     try:
@@ -319,4 +319,4 @@ async def add_image(message: types.Message, state: FSMContext, session: AsyncSes
 # Ловим все прочее некорректное поведение для этого состояния
 @admin_router.message(AddProduct.image)
 async def add_image2(message: types.Message, state: FSMContext):
-    await message.answer("Отправьте фото пищи")
+    await message.answer("Отправьте видео игрушки")

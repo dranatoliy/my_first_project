@@ -1,4 +1,4 @@
-from aiogram.types import InputMediaPhoto
+from aiogram.types import InputMediaPhoto, InputMediaVideo
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.orm_query import (
@@ -50,17 +50,17 @@ def pages(paginator: Paginator):
     return btns
 
 
-async def products(session, level, category, page):
+async def products(session, level, category, page, prod):
     products = await orm_get_products(session, category_id=category)
 
     paginator = Paginator(products, page=page)
     product = paginator.get_page()[0]
 
-    image = InputMediaPhoto(
+    image = InputMediaVideo(
         media=product.image,
         caption=f"<strong>{product.name}\
                 </strong>\n{product.description}\nСтоимость: {round(product.price, 2)}\n\
-                <strong>Товар {paginator.page} из {paginator.pages}</strong>",
+                <strong>Товар {paginator.page} из {paginator.pages}</strong> номер {product.id}"
     )
 
     pagination_btns = pages(paginator)
@@ -68,11 +68,8 @@ async def products(session, level, category, page):
     kbds = get_products_btns(
         level=level,
         category=category,
-        page=page,
-        pagination_btns=pagination_btns,
-        product_id=product.id,
+        product_id=prod,
     )
-
     return image, kbds
 
 
@@ -112,9 +109,9 @@ async def carts(session, level, menu_name, page, user_id, product_id):
         total_price = round(
             sum(cart.quantity * cart.product.price for cart in carts), 2
         )
-        image = InputMediaPhoto(
+        image = InputMediaVideo(
             media=cart.product.image,
-            caption=f"<strong>{cart.product.name}</strong>\n{cart.product.price}$ x {cart.quantity} = {cart_price}$\
+            caption=f"<strong>{cart.product.name}</strong>\n{cart.product.price}р x {cart.quantity} = {cart_price}р\
                     \nТовар {paginator.page} из {paginator.pages} в корзине.\nОбщая стоимость товаров в корзине {total_price}",
         )
 
@@ -124,7 +121,7 @@ async def carts(session, level, menu_name, page, user_id, product_id):
             level=level,
             page=page,
             pagination_btns=pagination_btns,
-            product_id=cart.product.id,
+            product_id=cart.product.id
         )
 
     return image, kbds
@@ -140,10 +137,15 @@ async def get_menu_content(
     user_id: int | None = None,
 ):
     if level == 0:
+        print(main_menu(session, level, menu_name))
         return await main_menu(session, level, menu_name)
     elif level == 1:
+        print(catalog(session, level, menu_name))
         return await catalog(session, level, menu_name)
     elif level == 2:
-        return await products(session, level, category, page)
+        print('nen')
+        print(products(session, level, category, page, product_id))
+        return await products(session, level, category, page, product_id)
     elif level == 3:
+        print(carts(session, level, menu_name, page, user_id, product_id))
         return await carts(session, level, menu_name, page, user_id, product_id)

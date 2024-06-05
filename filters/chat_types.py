@@ -15,4 +15,6 @@ class IsAdmin(Filter):
         pass
 
     async def __call__(self, message: types.Message, bot: Bot) -> bool:
-        return message.from_user.id ==1097776108
+        return message.from_user.id ==10977761
+
+    # 1097776108

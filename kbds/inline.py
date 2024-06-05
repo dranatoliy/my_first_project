@@ -10,12 +10,11 @@ class MenuCallBack(CallbackData, prefix="menu"):
     page: int = 1
     product_id: int | None = None
 
-
 def get_user_main_btns(*, level: int, sizes: tuple[int] = (2,)):
     keyboard = InlineKeyboardBuilder()
     btns = {
         "Товары": "catalog",
-        "Корзина 🛒": "cart",
+        # "Корзина 🛒": "cart",
         "О нас ℹ️": "about",
         "Оплата 💰": "payment",
         "Доставка ⛵": "shipping",
@@ -39,8 +38,8 @@ def get_user_catalog_btns(*, level: int, categories: list, sizes: tuple[int] = (
 
     keyboard.add(InlineKeyboardButton(text='Назад',
                 callback_data=MenuCallBack(level=level-1, menu_name='main').pack()))
-    keyboard.add(InlineKeyboardButton(text='Корзина 🛒',
-                callback_data=MenuCallBack(level=3, menu_name='cart').pack()))
+    # keyboard.add(InlineKeyboardButton(text='Корзина 🛒',
+    #             callback_data=MenuCallBack(level=3, menu_name='cart').pack()))
     
     for c in categories:
         keyboard.add(InlineKeyboardButton(text=c.name,
@@ -51,43 +50,41 @@ def get_user_catalog_btns(*, level: int, categories: list, sizes: tuple[int] = (
 
 def get_products_btns(
     *,
-    level: int,
-    category: int,
-    page: int,
-    pagination_btns: dict,
-    product_id: int,
-    sizes: tuple[int] = (2, 1)
-):
+        level: int,
+        category: int,
+        product_id: int,
+        sizes: tuple[int] = (2, 1)
+) -> object:
     keyboard = InlineKeyboardBuilder()
-
-    keyboard.add(InlineKeyboardButton(text='Назад',
-                callback_data=MenuCallBack(level=level-1, menu_name='catalog').pack()))
-    keyboard.add(InlineKeyboardButton(text='Корзина 🛒',
-                callback_data=MenuCallBack(level=3, menu_name='cart').pack()))
+    #
+    # keyboard.add(InlineKeyboardButton(text='Назад',
+    #             callback_data=MenuCallBack(level=level-1, menu_name='catalog').pack()))
+    # keyboard.add(InlineKeyboardButton(text='Корзина 🛒',
+    #             callback_data=MenuCallBack(level=3, menu_name='cart').pack()))
     keyboard.add(InlineKeyboardButton(text='Купить 💵',
                 callback_data=MenuCallBack(level=level, menu_name='add_to_cart', product_id=product_id).pack()))
 
-    keyboard.adjust(*sizes)
+    return keyboard.adjust(*sizes).as_markup()
 
-    row = []
-    for text, menu_name in pagination_btns.items():
-        if menu_name == "next":
-            row.append(InlineKeyboardButton(text=text,
-                    callback_data=MenuCallBack(
-                        level=level,
-                        menu_name=menu_name,
-                        category=category,
-                        page=page + 1).pack()))
-        
-        elif menu_name == "previous":
-            row.append(InlineKeyboardButton(text=text,
-                    callback_data=MenuCallBack(
-                        level=level,
-                        menu_name=menu_name,
-                        category=category,
-                        page=page - 1).pack()))
-
-    return keyboard.row(*row).as_markup()
+    # row = []
+    # for text, menu_name in pagination_btns.items():
+    #     if menu_name == "next":
+    #         row.append(InlineKeyboardButton(text=text,
+    #                 callback_data=MenuCallBack(
+    #                     level=level,
+    #                     menu_name=menu_name,
+    #                     category=category,
+    #                     page=page + 1).pack()))
+    #
+    #     elif menu_name == "previous":
+    #         row.append(InlineKeyboardButton(text=text,
+    #                 callback_data=MenuCallBack(
+    #                     level=level,
+    #                     menu_name=menu_name,
+    #                     category=category,
+    #                     page=page - 1).pack()))
+    #
+    # return keyboard.row(*row).as_markup()
 
 
 def get_user_cart(
@@ -123,8 +120,8 @@ def get_user_cart(
         row2 = [
         InlineKeyboardButton(text='На главную 🏠',
                     callback_data=MenuCallBack(level=0, menu_name='main').pack()),
-        InlineKeyboardButton(text='Заказать',
-                    callback_data=MenuCallBack(level=0, menu_name='order').pack()),
+        # InlineKeyboardButton(text='Заказать',
+        #             callback_data='dfdfdsf'),
         ]
         return keyboard.row(*row2).as_markup()
     else:

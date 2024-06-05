@@ -8,14 +8,13 @@ description_for_info_pages = {
     "about": "Игрушки на 3Д принтере",
     "payment": as_marked_section(
         Bold("Варианты оплаты:"),
-        'перевод по ссылке На тинькофф банк',
+        'перевод по ссылке на тинькофф банк https://www.tinkoff.ru/rm/drozdov.anatoliy4/PeuPP96769',
         'наличкой',
         marker="✅ ",
     ).as_html(),
     "shipping": as_list(
         as_marked_section(
             Bold("Варианты доставки/заказа:"),
-            "Курьер",
             "Самовынос (заберу на работе)",
             marker="✅ ",
         ),
